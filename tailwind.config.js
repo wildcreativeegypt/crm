@@ -1,10 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './resources/views/**/*.blade.php',
-    './resources/js/**/*.js',
-    './resources/js/**/*.vue',
-  ],
+  './resources/views/**/*.blade.php',
+  './resources/js/**/*.js',
+  './resources/js/**/*.vue',
+  './node_modules/daisyui/**/*.js',
+],
   theme: { extend: {} },
   plugins: [
     require('@tailwindcss/forms'), // if you want form styles

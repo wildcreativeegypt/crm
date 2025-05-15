@@ -2,28 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class PersonalInstallment extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'user_id',
         'payee',
         'installment_amount',
-        'currency',
         'due_date',
         'frequency',
-        'paid',
+        'is_recurring',
+        'recurring_interval',
+        'recurring_end_date',
     ];
 
-    /**
-     * (Optional) Link to the User who created it
-     */
-    public function user()
+    // Helper: Check if installment is recurring
+    public function isRecurring()
     {
-        return $this->belongsTo(User::class);
+        return $this->is_recurring;
+    }
+
+    // Generate next due date based on recurring interval
+    public function calculateNextDueDate()
+    {
+        return match ($this->recurring_interval) {
+            'weekly' => Carbon::parse($this->due_date)->addWeek(),
+            'monthly' => Carbon::parse($this->due_date)->addMonth(),
+            default => null,
+        };
     }
 }

@@ -1,17 +1,25 @@
+{{-- resources/views/ad_account_topups/create.blade.php --}}
 @extends('layouts.dashboard')
 
-@section('content')
-<div class="container mx-auto p-4 max-w-lg">
-  <h1 class="text-2xl font-bold mb-4">Record a New Top-Up</h1>
+@section('title', 'New Top-Up')
 
-  <form action="{{ route('ad_account_topups.store') }}" method="POST">
+@section('content')
+<div class="container mx-auto p-6 max-w-lg">
+  <h1 class="text-2xl font-bold mb-6">Record a New Top-Up</h1>
+
+  <form action="{{ route('ad_account_topups.store') }}" method="POST" class="space-y-6">
     @csrf
 
-    <div class="mb-4">
-      <label for="ad_account_id" class="block font-medium">Ad Account</label>
-      <select id="ad_account_id"
-              name="ad_account_id"
-              class="w-full border rounded p-2 @error('ad_account_id') border-red-500 @enderror">
+    {{-- Ad Account --}}
+    <div class="form-control w-full">
+      <label for="ad_account_id" class="label">
+        <span class="label-text">Ad Account</span>
+      </label>
+      <select
+        id="ad_account_id"
+        name="ad_account_id"
+        class="select select-bordered w-full @error('ad_account_id') select-error @enderror"
+      >
         <option value="">-- Select Account --</option>
         @foreach($accounts as $acct)
           <option value="{{ $acct->id }}"
@@ -21,47 +29,66 @@
         @endforeach
       </select>
       @error('ad_account_id')
-        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
       @enderror
     </div>
 
-    <div class="mb-4">
-      <label for="date" class="block font-medium">Date</label>
-      <input type="date"
-             id="date"
-             name="date"
-             value="{{ old('date', now()->toDateString()) }}"
-             class="w-full border rounded p-2 @error('date') border-red-500 @enderror" />
+    {{-- Date --}}
+    <div class="form-control w-full">
+      <label for="date" class="label">
+        <span class="label-text">Date</span>
+      </label>
+      <input
+        type="date"
+        id="date"
+        name="date"
+        value="{{ old('date', now()->toDateString()) }}"
+        class="input input-bordered w-full @error('date') input-error @enderror"
+      />
       @error('date')
-        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
       @enderror
     </div>
 
-    <div class="mb-4">
-      <label for="amount" class="block font-medium">Amount (EGP)</label>
-      <input type="number"
-             step="0.01"
-             id="amount"
-             name="amount"
-             value="{{ old('amount') }}"
-             class="w-full border rounded p-2 @error('amount') border-red-500 @enderror" />
+    {{-- Amount --}}
+    <div class="form-control w-full">
+      <label for="amount" class="label">
+        <span class="label-text">Amount (EGP)</span>
+      </label>
+      <input
+        type="number"
+        step="0.01"
+        id="amount"
+        name="amount"
+        placeholder="e.g. 1500.00"
+        value="{{ old('amount') }}"
+        class="input input-bordered w-full @error('amount') input-error @enderror"
+      />
       @error('amount')
-        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
       @enderror
     </div>
 
-    <div class="mb-4">
-      <label for="notes" class="block font-medium">Notes (optional)</label>
-      <textarea id="notes"
-                name="notes"
-                rows="3"
-                class="w-full border rounded p-2">{{ old('notes') }}</textarea>
+    {{-- Notes --}}
+    <div class="form-control w-full">
+      <label for="notes" class="label">
+        <span class="label-text">Notes (optional)</span>
+      </label>
+      <textarea
+        id="notes"
+        name="notes"
+        rows="4"
+        class="textarea textarea-bordered w-full"
+        placeholder="Any extra info…"
+      >{{ old('notes') }}</textarea>
     </div>
 
-    <button type="submit"
-            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-      Save Top-Up
-    </button>
+    {{-- Submit --}}
+    <div class="form-control">
+      <button type="submit" class="btn btn-success">
+        Save Top-Up
+      </button>
+    </div>
   </form>
 </div>
 @endsection

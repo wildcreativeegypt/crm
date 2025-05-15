@@ -2,24 +2,33 @@
 <html lang="{{ str_replace('_','-',app()->getLocale()) }}">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <!-- 1) DaisyUI core (all components + light/dark) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <!-- (Optional) extra DaisyUI themes -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/themes.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- 2) Tailwind “browser” build (utility compiler) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- 3) Tabler Icons -->
+  <link
+    href="https://unpkg.com/tabler-icons@2.37.0/iconfont/tabler-icons.min.css"
+    rel="stylesheet"
+  />
+
   <title>@yield('title','CRMHub')</title>
-
-  {{-- 1) Tailwind via CDN --}}
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  {{-- 2) Immediately after, load DaisyUI as a Tailwind plugin --}}
-  <script type="module">
-    import daisyui from 'https://cdn.jsdelivr.net/npm/daisyui@5.0.35/+esm'
-
-    tailwind.config = {
-      plugins: [daisyui],
-      daisyui: {
-        themes: ['light'], // pick your theme(s)
-      },
-    }
-  </script>
 </head>
+
 <body class="drawer drawer-mobile h-screen bg-base-100">
 
   {{-- Sidebar toggle --}}

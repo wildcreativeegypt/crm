@@ -1,171 +1,115 @@
-{{-- resources/views/layouts/dashboard.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_','-',app()->getLocale()) }}">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet" type="text/css">
+
+  <!-- DaisyUI core -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css">
+
+  <!-- Optional: DaisyUI themes -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/themes.css" rel="stylesheet" type="text/css">
+
+  <!-- Optional: Tabler Icons -->
+  <link href="https://unpkg.com/tabler-icons@2.37.0/iconfont/tabler-icons.min.css" rel="stylesheet" type="text/css">
+
   <title>@yield('title','CRMHub')</title>
-
-  {{-- 1) Tailwind + DaisyUI via CDN --}}
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // register DaisyUI with the CDN-loaded Tailwind
-    tailwind.config = {
-      theme: { extend: {} },
-      plugins: [daisyui],
-      daisyui: {
-        themes: ['light','dark'],
-        darkTheme: 'dark',
-      },
-    }
-  </script>
-
-  {{-- 2) Tabler Icons (for `<i class="ti ti-…">`) --}}
-  <link
-    href="https://unpkg.com/tabler-icons@2.37.0/iconfont/tabler-icons.min.css"
-    rel="stylesheet"
-  />
 </head>
-<body class="drawer drawer-mobile h-screen dark:bg-gray-900">
+<body class="h-screen flex dark:bg-gray-900">
 
-  {{-- Sidebar toggle --}}
-  <input id="sidebar-toggle" type="checkbox" class="drawer-toggle" />
+  {{-- Sidebar (Always Visible) --}}
+  <aside class="w-64 bg-base-200 p-4 dark:bg-gray-800">
+    <a href="{{ route('dashboard') }}" class="text-2xl font-bold block mb-6">
+      CRMHub
+    </a>
+    <ul class="menu">
+      <li><a href="{{ route('dashboard') }}"><i class="ti ti-dashboard"></i> Dashboard</a></li>
+      <li><a href="{{ route('clients.index') }}"><i class="ti ti-users"></i> Clients</a></li>
+      <li><a href="{{ route('ad_accounts.index') }}"><i class="ti ti-brand-facebook"></i> Ad Accounts</a></li>
+      <li><a href="{{ route('ad_account_topups.index') }}"><i class="ti ti-arrow-up-circle"></i> Top-Ups</a></li>
+      <li><a href="{{ route('ad_expenses.index') }}"><i class="ti ti-credit-card"></i> Expenses</a></li>
+      <li><a href="{{ route('payments.index') }}"><i class="ti ti-currency-cedi"></i> Payments</a></li>
+      <li class="mt-4"><span class="text-xs uppercase">Personal</span></li>
+      <li><a href="{{ route('personal.expenses.index') }}"><i class="ti ti-wallet"></i> My Expenses</a></li>
+	  <li><a href="{{ route('reports.index') }}"><i class="ti ti-chart-line"></i> Reports</a></li>
+      
+      {{-- Installments Section --}}
+      <li><a href="{{ route('installments.index') }}"><i class="ti ti-calendar"></i> Installments</a></li>
+    </ul>
+  </aside>
 
   {{-- Main content --}}
-  <div class="drawer-content flex flex-col">
-
+  <div class="flex-1 flex flex-col">
     {{-- Top navbar --}}
-    <div class="navbar bg-base-100 border-b">
-      {{-- Mobile hamburger --}}
-      <div class="flex-none lg:hidden">
-        <label for="sidebar-toggle" class="btn btn-square btn-ghost">
-          <i class="ti ti-menu-2"></i>
-        </label>
-      </div>
+    <nav class="navbar bg-base-100 shadow-sm dark:bg-gray-800">
+      <div class="container mx-auto flex justify-between items-center">
 
-      {{-- Search box --}}
-      <div class="flex-1 px-2">
-        <div class="form-control">
-          <div class="input-group">
-            <input
-              type="text"
-              placeholder="Search…"
-              class="input input-bordered w-full"
-            />
-            <button class="btn btn-square">
-              <i class="ti ti-search"></i>
-            </button>
+        {{-- Left: brand --}}
+        <div class="navbar-start">
+          <a href="{{ route('dashboard') }}" class="btn btn-ghost normal-case text-xl">
+            CRMHub
+          </a>
+        </div>
+
+        {{-- Center: search (hidden on mobile) --}}
+        <div class="navbar-center hidden lg:flex">
+          <input
+            type="search"
+            placeholder="Search…"
+            class="input input-bordered w-full max-w-md"
+          />
+        </div>
+
+        {{-- Right: icons + avatar --}}
+        <div class="navbar-end flex items-center space-x-4">
+          {{-- Bell Icon --}}
+          <button class="btn btn-ghost btn-square">
+            <i class="ti ti-bell"></i>
+          </button>
+          {{-- Plus Icon --}}
+          <button class="btn btn-ghost btn-square">
+            <i class="ti ti-plus"></i>
+          </button>
+          {{-- Avatar --}}
+          <div class="dropdown dropdown-end z-50">
+            <label tabindex="0" class="btn btn-ghost btn-circle avatar flex items-center">
+              <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img
+                  src="{{ Auth::user()->profile_photo_url ?? asset('images/default-avatar.png') }}"
+                  alt="Avatar"
+                />
+              </div>
+            </label>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              {{-- Profile Link --}}
+              <li><a href="{{ route('profile.show') }}">Profile</a></li>
+
+              {{-- Settings Link --}}
+              <li><a href="{{ route('settings.index') }}">Settings</a></li>
+
+              {{-- Logout Button --}}
+              <li>
+                <form method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" class="w-full text-left">Logout</button>
+                </form>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-
-      {{-- Notifications, “+”, and user dropdown --}}
-      <div class="flex-none space-x-2">
-        <button class="btn btn-ghost btn-square">
-          <i class="ti ti-bell"></i>
-        </button>
-        <button class="btn btn-ghost btn-square">
-          <i class="ti ti-plus"></i>
-        </button>
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-            <div class="w-8 rounded-full">
-              <img
-                src="{{ Auth::user()->profile_photo_url ?? 'https://via.placeholder.com/32' }}"
-                alt="Avatar"
-              />
-            </div>
-          </label>
-          <ul
-            tabindex="0"
-            class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
-          >
-            <li><a href="#">Profile</a></li>
-            <li>
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="w-full text-left">
-                  Logout
-                </button>
-              </form>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    </nav>
 
     {{-- Page content --}}
-    <main class="p-6 overflow-auto">
+    <main class="container mx-auto p-6 bg-base-200 dark:bg-gray-900">
       @yield('content')
     </main>
-  </div>
-
-  {{-- Sidebar --}}
-  <div class="drawer-side">
-    <label for="sidebar-toggle" class="drawer-overlay"></label>
-    <aside class="w-64 bg-base-200 p-4">
-      <a href="{{ route('dashboard') }}" class="text-2xl font-bold block mb-6">
-        CRMHub
-      </a>
-      <ul class="menu">
-        <li>
-          <a
-            href="{{ route('dashboard') }}"
-            class="{{ request()->routeIs('dashboard') ? 'active' : '' }}"
-          >
-            <i class="ti ti-dashboard"></i> Dashboard
-          </a>
-        </li>
-        <li>
-          <a
-            href="{{ route('clients.index') }}"
-            class="{{ request()->is('clients*') ? 'active' : '' }}"
-          >
-            <i class="ti ti-users"></i> Clients
-          </a>
-        </li>
-        <li>
-          <a
-            href="{{ route('ad_accounts.index') }}"
-            class="{{ request()->is('ad_accounts*') ? 'active' : '' }}"
-          >
-            <i class="ti ti-brand-facebook"></i> Ad Accounts
-          </a>
-        </li>
-        <li>
-          <a
-            href="{{ route('ad_expenses.index') }}"
-            class="{{ request()->is('ad_expenses*') ? 'active' : '' }}"
-          >
-            <i class="ti ti-credit-card"></i> Expenses
-          </a>
-        </li>
-        <li>
-          <a
-            href="{{ route('payments.index') }}"
-            class="{{ request()->is('payments*') ? 'active' : '' }}"
-          >
-            <i class="ti ti-currency-cedi"></i> Payments
-          </a>
-        </li>
-        <li>
-          <a
-            href="{{ route('personal.expenses.index') }}"
-            class="{{ request()->is('personal/expenses*') ? 'active' : '' }}"
-          >
-            <i class="ti ti-wallet"></i> My Expenses
-          </a>
-        </li>
-        <li>
-          <a
-            href="{{ route('personal.installments.index') }}"
-            class="{{ request()->is('personal/installments*') ? 'active' : '' }}"
-          >
-            <i class="ti ti-calendar"></i> Installments
-          </a>
-        </li>
-      </ul>
-    </aside>
   </div>
 </body>
 </html>
