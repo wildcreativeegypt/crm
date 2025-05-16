@@ -11,8 +11,18 @@ class Client extends Model
 
     protected $fillable = ['name', 'email', 'facebook_account_id'];
 
+    // Fixed relationship with null protection
     public function facebookAccount()
     {
-        return $this->belongsTo(FacebookAccount::class);
+        return $this->belongsTo(FacebookAccount::class)->withDefault([
+            'name' => 'No Facebook Account',  // Default values
+            'id' => null                     // Prevents "property of non-object" errors
+        ]);
+    }
+
+    // Bonus: Add this scope for easy querying of clients with/without FB accounts
+    public function scopeWithFacebook($query)
+    {
+        return $query->whereNotNull('facebook_account_id');
     }
 }

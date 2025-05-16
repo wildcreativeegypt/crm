@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class ClientController extends Controller
 {
     public function index()
-    {
-        $clients = Client::with('facebookAccount')->get();
-        return view('clients.index', compact('clients'));
-    }
+{
+    $clients = Client::with('facebookAccount')->paginate(10); // 10 items per page
+    return view('clients.index', compact('clients'));
+}
 
     public function create()
     {
